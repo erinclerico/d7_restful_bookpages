@@ -1,0 +1,109 @@
+<?php
+
+
+/**
+ * Implements hook_permission().
+ */
+function restful_bookpages_permission() {
+  return array(
+    'read course page array' =>  array(
+      'title' => t('Read course page array'),
+      'description' => t('Access the course page array.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_services_resources().
+ */
+function restful_bookpages_services_resources() {
+	return array (
+    'course' => array (
+      'operations' => array (
+          'retrieve' => array (
+            'help' => 'Fetch all the pages for a given course.',
+            'file' => array(
+              'file' => 'inc', 
+              'module' => 'note_service'),
+            'file' => array(
+              'type' => 'inc',
+              'module' => 'restful_bookpages',
+              'name' => 'inc/pages',
+            ), 
+            'callback' => '_bookpages_fetch_pages',
+            'access callback' => '_bookpages_access',
+            'access arguments' => array('view'),
+            'args' => array(
+              array(
+                'name' => 'fn',
+                'type' => 'string',
+                'description' => 'Function to perform',
+                'source' => array('path' => '0'),
+                'optional' => TRUE,
+                'default' => '0',
+              ),              
+              array(
+                'name' => 'nid',
+                'type' => 'int',
+                'description' => 'Course nid',
+                'source' => array('path' => '1'),
+                'optional' => TRUE,
+                'default' => '0',
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+}
+
+// bookpages.module
+    /**
+     * Access callback for the note resource.
+     *
+     * @param string $op
+     *  The operation that's going to be performed.
+     * @param array $args
+     *  The arguments that will be passed to the callback.
+     * @return bool
+     *  Whether access is given or not.
+     */
+    function _bookpages_access($op) {
+      global $user;
+      $access = FALSE;
+      switch ($op) {
+        case 'view':
+          //$note = noteresource_get_note($args[0]);
+          $access = user_access('read course page array');
+          //$access = $access || $note->uid == $user->uid && user_access('note resource view own notes');
+          break;
+        // case 'update':
+        //   $note = noteresource_get_note($args[0]->id);
+        //   $access = user_access('note resource edit any note');
+        //   $access = $access || $note->uid == $user->uid && user_access('note resource edit own notes');
+        //   break;
+        // case 'delete':
+        //   $note = noteresource_get_note($args[0]);
+        //   $access = user_access('note resource delete any note');
+        //   $access = $access || $note->uid == $user->uid && user_access('note resource delete own notes');
+        //   break;
+      }
+      return true;
+      //return $access;
+    }
+
+/**
+ * Callback for retrieving course objects.
+ *
+ * @param int $id
+ * @return object
+ */
+// function _bookpages_retrieve($fn) {
+//   return bookpages_get_course();
+// }
+
+// function bookpages_get_course() {
+//   $lick_my_balls = stdClass;
+//   $lick_my_balls->and = 'suck my dick!';
+//   return (object)array('lick' => 'myballs');
+// }

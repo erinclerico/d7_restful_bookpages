@@ -1,0 +1,9 @@
+name = Training Site Course Services
+description = Restful API delivers course object functions.
+core = 7.x
+package = Training Site
+php = 5.2
+version = 7.x-1.00
+
+;;files[] = inc/courseresource.inc
+;;files[] = training_site_course_svc.module
